@@ -1,0 +1,14 @@
+# prompt|equation|choice 1|choice 2|choice 3|choice 4|answer
+# Use +, −, or × in the equation. Keep four distinct, nonnegative choices.
+A hero finds 2 gems, then 3 more. How many gems now?|2 + 3 = ?|4|5|6|7|5
+A wizard has 7 stars and earns 2 more. How many stars now?|7 + 2 = ?|8|9|10|11|9
+A dragon collects 4 coins and then 6 coins. How many coins total?|4 + 6 = ?|8|9|10|12|10
+A knight finds 9 keys and 5 more keys. How many keys total?|9 + 5 = ?|12|13|14|15|14
+A hero has 8 gems and spends 3. How many remain?|8 − 3 = ?|3|4|5|6|5
+A wizard has 10 potions and uses 4. How many are left?|10 − 4 = ?|5|6|7|8|6
+A dragon has 12 coins and gives away 7. How many are left?|12 − 7 = ?|5|6|7|8|5
+A knight has 15 shields and gives 6 to friends. How many remain?|15 − 6 = ?|7|8|9|10|9
+There are 2 chests with 3 gems in each. How many gems total?|2 × 3 = ?|4|5|6|8|6
+There are 3 bags with 4 stars in each. How many stars total?|3 × 4 = ?|9|10|12|16|12
+There are 5 dragons with 2 coins each. How many coins total?|5 × 2 = ?|8|10|12|15|10
+There are 4 towers with 4 flags each. How many flags total?|4 × 4 = ?|12|14|16|20|16
