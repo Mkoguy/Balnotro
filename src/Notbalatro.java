@@ -90,6 +90,9 @@ public class Notbalatro extends JFrame {
         root.add(createBattlefield(), BorderLayout.CENTER);
         root.add(createActionArea(), BorderLayout.SOUTH);
 
+        statusLabel.setText(gameState == null
+                ? "Stage " + levels.level + ": read the enemy intent and choose your cards."
+                : "Adventure resumed. Read the enemy intent and choose your cards.");
         updateView();
         if (gameState == null) SwingUtilities.invokeLater(this::showTutorial);
     }
@@ -118,11 +121,17 @@ public class Notbalatro extends JFrame {
         hatsLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         JButton tutorialButton = compactButton("HOW TO PLAY");
         tutorialButton.addActionListener(e -> showTutorial());
+        JButton practiceButton = compactButton("PRACTICE");
+        practiceButton.addActionListener(e -> new PracticeDialog(this).setVisible(true));
+        JButton settingsButton = compactButton("SETTINGS");
+        settingsButton.addActionListener(e -> new SettingsDialog(this).setVisible(true));
         JButton saveButton = compactButton(arcadeMode ? "EXIT ARCADE" : "SAVE & MENU");
         saveButton.addActionListener(e -> saveOrExit());
         JPanel controls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         controls.setOpaque(false);
         controls.add(tutorialButton);
+        controls.add(practiceButton);
+        controls.add(settingsButton);
         controls.add(saveButton);
         header.add(titleArea, BorderLayout.WEST);
         header.add(hatsLabel, BorderLayout.CENTER);
@@ -143,7 +152,7 @@ public class Notbalatro extends JFrame {
         middle.setOpaque(false);
         statusLabel = label("", new Font("SansSerif", Font.BOLD, 16), TEXT);
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        statusLabel.setBorder(new CompoundBorder(new LineBorder(SURFACE_LIGHT, 1, true), new EmptyBorder(13, 16, 13, 16)));
+        statusLabel.setBorder(new CompoundBorder(new LineBorder(VIOLET, 1, true), new EmptyBorder(13, 16, 13, 16)));
         statusLabel.setBackground(SURFACE);
         statusLabel.setOpaque(true);
 
@@ -151,7 +160,7 @@ public class Notbalatro extends JFrame {
         handContainer.setLayout(new BorderLayout(0, 8));
         JPanel handHeading = new JPanel(new BorderLayout());
         handHeading.setOpaque(false);
-        JLabel handTitle = label("YOUR HAND", new Font("SansSerif", Font.BOLD, 14), TEXT);
+        JLabel handTitle = label("YOUR HAND  •  BUILD A COMBINATION", new Font("SansSerif", Font.BOLD, 14), GOLD);
         selectionLabel = label("Select up to 5 cards", new Font("SansSerif", Font.PLAIN, 13), new Color(174, 183, 220));
         selectionLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         handHeading.add(handTitle, BorderLayout.WEST);
@@ -233,7 +242,11 @@ public class Notbalatro extends JFrame {
         JLabel help = label("Choose cards, then choose one action. Your shield only lasts for this enemy strike.",
                 new Font("SansSerif", Font.PLAIN, 12), new Color(157, 169, 208));
         help.setHorizontalAlignment(SwingConstants.CENTER);
-        actions.add(mathLabel, BorderLayout.NORTH);
+        JPanel mathPanel = new JPanel(new BorderLayout());
+        mathPanel.setBackground(SURFACE);
+        mathPanel.setBorder(new CompoundBorder(new LineBorder(SURFACE_LIGHT, 1, true), new EmptyBorder(10, 12, 10, 12)));
+        mathPanel.add(mathLabel, BorderLayout.CENTER);
+        actions.add(mathPanel, BorderLayout.NORTH);
         actions.add(buttonRow, BorderLayout.CENTER);
         actions.add(help, BorderLayout.SOUTH);
         return actions;
@@ -283,7 +296,7 @@ public class Notbalatro extends JFrame {
         button.setForeground(TEXT);
         button.setBackground(SURFACE_LIGHT);
         button.setFocusPainted(false);
-        button.setPreferredSize(new Dimension(122, 34));
+        button.setPreferredSize(new Dimension(110, 34));
         button.setBorder(new LineBorder(new Color(89, 103, 151), 1, true));
         return button;
     }
@@ -299,15 +312,17 @@ public class Notbalatro extends JFrame {
                 continue;
             }
             boolean redSuit = card.s.equals("♥") || card.s.equals("♦");
-            Color suitColor = redSuit ? new Color(255, 117, 138) : new Color(221, 227, 255);
+            Color suitColor = redSuit ? new Color(175, 42, 67) : new Color(25, 33, 54);
             JToggleButton button = new JToggleButton("<html><center><span style='font-size:22px'><b>" + card.r + "</b></span><br>"
                     + "<span style='font-size:24px'>" + card.s + "</span><br><span style='font-size:10px'>" + card.val + " POWER</span></center></html>");
             button.setFont(new Font("SansSerif", Font.BOLD, 15));
             button.setForeground(suitColor);
-            button.setBackground(new Color(31, 39, 69));
+            button.setBackground(hand.sel.contains(card) ? new Color(255, 239, 194) : new Color(248, 246, 238));
             button.setFocusPainted(false);
             button.setPreferredSize(new Dimension(88, 118));
-            button.setBorder(new LineBorder(hand.sel.contains(card) ? GOLD : SURFACE_LIGHT, hand.sel.contains(card) ? 3 : 1, true));
+            button.setBorder(new CompoundBorder(new LineBorder(hand.sel.contains(card) ? GOLD : new Color(180, 186, 204),
+                    hand.sel.contains(card) ? 3 : 1, true), new EmptyBorder(3, 3, 3, 3)));
+            button.setToolTipText(card.r + " of " + suitName(card.s) + " • " + card.val + " power");
             button.setSelected(hand.sel.contains(card));
             button.addActionListener(e -> selectCard(card, button));
             handPanel.add(button);
@@ -329,6 +344,15 @@ public class Notbalatro extends JFrame {
         }
         showHand();
         updateSelectionLabel();
+    }
+
+    private String suitName(String suit) {
+        return switch (suit) {
+            case "♥" -> "Hearts";
+            case "♦" -> "Diamonds";
+            case "♣" -> "Clubs";
+            default -> "Spades";
+        };
     }
 
     private void selectAllCards() {
@@ -362,6 +386,7 @@ public class Notbalatro extends JFrame {
 
     private void attack() {
         if (!canUseAction()) return;
+        if (!answerCombatQuestion()) return;
         int cardPower = selectedPower();
         HandScore handScore = hand.evaluateSelection();
         int damage = calculateAttack(cardPower, hand.sel.size(), handScore);
@@ -375,6 +400,7 @@ public class Notbalatro extends JFrame {
 
     private void defend() {
         if (!canUseAction()) return;
+        if (!answerCombatQuestion()) return;
         int cardPower = selectedPower();
         HandScore handScore = hand.evaluateSelection();
         int block = calculateBlock(cardPower, handScore);
@@ -401,6 +427,11 @@ public class Notbalatro extends JFrame {
         spendSelectedCards();
         statusLabel.setText("You redraw your hand without spending a turn.");
         updateView();
+    }
+
+    private boolean answerCombatQuestion() {
+        QuestionSettings.Mode mode = QuestionSettings.getMode();
+        return mode == QuestionSettings.Mode.OFF || CombatQuestionDialog.ask(this, mode);
     }
 
     private void spendSelectedCards() {

@@ -31,6 +31,7 @@ bin/
 *.iml
 saves/
 score.txt
+.balnotro-settings.properties
 
 ### Mac OS ###
 .DS_Store

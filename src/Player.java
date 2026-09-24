@@ -8,10 +8,10 @@ public class Player implements Serializable {
     int maxHp = 100;
     int hp = 100;
     int block = 0;
-    int hands = 41;
-    int discards = 31;
+    int hands = 4;
+    int discards = 4;
     int baseMult = 1;
-    int gold = 100;
+    int gold = 10;
     int lives = 3;
     boolean reviveUsed = false;
     List<Hat> hats = new ArrayList<>();

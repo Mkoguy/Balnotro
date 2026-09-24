@@ -16,8 +16,8 @@ public class MainMenuFrame extends JFrame {
 
     public MainMenuFrame() {
         setTitle("Balnotro");
-        setSize(980, 690);
-        setMinimumSize(new Dimension(850, 620));
+        setSize(980, 740);
+        setMinimumSize(new Dimension(850, 740));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationByPlatform(true);
 
@@ -62,21 +62,25 @@ public class MainMenuFrame extends JFrame {
         panel.add(label("START A JOURNEY", new Font("SansSerif", Font.BOLD, 20), TEAL));
         panel.add(Box.createVerticalStrut(8));
         panel.add(label("Adventure can be saved in any of three slots.", new Font("SansSerif", Font.PLAIN, 13), new Color(185, 196, 234)));
-        panel.add(Box.createVerticalStrut(16));
+        panel.add(Box.createVerticalStrut(12));
 
         JButton newJourney = menuButton("NEW ADVENTURE", "Three lives and permanent save slots", VIOLET);
         newJourney.addActionListener(e -> openNewRun(false));
         JButton arcade = menuButton("ARCADE MODE", "One life, endless stages, top-five scores", new Color(183, 88, 188));
         arcade.addActionListener(e -> openNewRun(true));
+        JButton practice = menuButton("PRACTICE LAB", "Identify poker hands without risking a run", TEAL);
+        practice.addActionListener(e -> new PracticeDialog(this).setVisible(true));
         panel.add(newJourney);
-        panel.add(Box.createVerticalStrut(10));
+        panel.add(Box.createVerticalStrut(8));
         panel.add(arcade);
-        panel.add(Box.createVerticalStrut(22));
+        panel.add(Box.createVerticalStrut(8));
+        panel.add(practice);
+        panel.add(Box.createVerticalStrut(12));
         panel.add(label("LOAD A SAVE", new Font("SansSerif", Font.BOLD, 16), GOLD));
         panel.add(Box.createVerticalStrut(8));
         for (int slot = 1; slot <= SaveManager.SLOT_COUNT; slot++) {
             panel.add(createSaveButton(slot));
-            if (slot < SaveManager.SLOT_COUNT) panel.add(Box.createVerticalStrut(7));
+            if (slot < SaveManager.SLOT_COUNT) panel.add(Box.createVerticalStrut(6));
         }
         return panel;
     }
@@ -117,6 +121,8 @@ public class MainMenuFrame extends JFrame {
     private JButton createSaveButton(int slot) {
         boolean available = SaveManager.exists(slot);
         JButton button = menuButton("SLOT " + slot, SaveManager.slotDescription(slot), available ? SURFACE_LIGHT : new Color(31, 38, 66));
+        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+        button.setPreferredSize(new Dimension(360, 50));
         button.setEnabled(available);
         button.addActionListener(e -> loadSave(slot));
         return button;
@@ -137,11 +143,17 @@ public class MainMenuFrame extends JFrame {
     }
 
     private JPanel createFooter() {
-        JPanel footer = new JPanel();
+        JPanel footer = new JPanel(new BorderLayout());
         footer.setOpaque(false);
-        JLabel text = label("ADVENTURE SAVES YOUR CURRENT RUN. ARCADE RECORDS ONLY YOUR BEST SCORES.",
+        JLabel text = label("PRACTICE IS FREE. ADVENTURE SAVES YOUR RUN. ARCADE RECORDS YOUR BEST SCORES.",
                 new Font("SansSerif", Font.BOLD, 11), new Color(156, 170, 214));
-        footer.add(text);
+        JButton settings = new JButton("SETTINGS");
+        settings.setForeground(TEXT);
+        settings.setBackground(SURFACE_LIGHT);
+        settings.setFocusPainted(false);
+        settings.addActionListener(e -> new SettingsDialog(this).setVisible(true));
+        footer.add(text, BorderLayout.CENTER);
+        footer.add(settings, BorderLayout.EAST);
         return footer;
     }
 

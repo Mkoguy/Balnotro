@@ -17,6 +17,8 @@ public class TutorialDialog extends JDialog {
             {"ONE TURN, TWO CHOICES", "Select one to five cards, then ATTACK to damage the enemy or DEFEND to create a shield. Read the enemy's NEXT attack before deciding. Your shield lasts for its next strike only."},
             {"THE MATH IS THE MAGIC", "Your card power is added together, then multiplied by your hero multiplier and poker-hand multiplier. Hat bonuses are added afterward. The live equation below your cards shows every step."},
             {"LEARN POKER HANDS", "Pair ×1.25  •  Two Pair ×1.5  •  Three of a Kind ×1.75\nStraight ×2.25  •  Flush ×2.5  •  Full House ×3\nFour of a Kind ×4  •  Straight Flush ×5  •  Royal Flush ×8"},
+            {"TEST YOURSELF", "Open PRACTICE LAB from the menu or PRACTICE during a run. Identify ten hands before revealing their names and power calculations. Practice costs no lives or gold."},
+            {"COMBAT QUESTIONS", "Open SETTINGS to turn on four-choice math questions for ATTACK and DEFEND. Choose local questions or online AI questions. A correct answer unlocks the action; a wrong answer keeps your cards and turn."},
             {"GROW YOUR BUILD", "Win battles for gold, then visit the Hat Emporium. Hats can improve health, attack, defense, healing, gold rewards, or turn count. Build around the poker hands you enjoy making."}
     };
 
